@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&display=swap" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <form id="search-form" action="/search" method="POST">
+        <nav class="parent-nav">
+            <div id="nav-1"><a href="/">eBook</a></div>
+            <div id="nav-2">
+                <div id="search-text">Search Book</div>
+                <div id="search-div">
+                    
+                    <input id="search-bar" name="search" type="search" placeholder="Search" value="<% if(locals.search){%><%=search%><%}%>" autocomplete="off">
+                    <input id="search-button" type="submit">
+                </div>
+            </div>
+            <div id="nav-3">
+                <div id="sort-text">Sort By</div>
+                <div>
+                    <label class="sort-radio">
+                        <input type="radio" name="category" value="created_at"> Date
+                    </label >
+                    <label class="sort-radio">
+                        <input type="radio" name="category" value="rating"> Rating
+                    </label>
+                    <label class="sort-radio">
+                        <input type="radio" name="category" value="title"> Title
+                    </label>
+                    <select name="sort-radio" id="sort-select">
+                        <option value="created_at">Date</option>
+                        <option value="rating">Rating</option>
+                        <option value="title">Title</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+        </form>
+
+        <div class="add-button">
+            <form action="/add" method="GET">
+                <input type="submit" value="Add">
+            </form>
+        </div>
+
+        <div class="parent-books">
+
+            <% if(locals.books && books.length > 0) { books.forEach((book) => { %>
+
+            <form id="edit-form" action="/edit" method="POST" >
+            <div class="book-container" id="book-container-1">
+                <input type="text" value="<%=book.reviews_id%>" name="id" hidden>
+                <div class="book-title item-1">
+                    <%= book.title %>
+                </div>
+                <div class="book-image item-2">
+                    <img src="https://covers.openlibrary.org/b/isbn/<%= book.isbn_id %>-M.jpg" alt="">
+                </div>
+                <div class="book-rating item-3">
+                    <% for(let i = 1; i <= 5; i++) { %>
+                        <input 
+                            type="radio" 
+                            id="star-<%= i %>-<%=book.id%>" 
+                            name="star-rating" 
+                            value="<%= i %>" 
+                            class="disable-radio radio-<%=book.id%>"
+                            <%= book.rating == i ? "checked" : "" %>
+                            required
+                        >
+                        <label for="star-<%= i %>-<%= book.id %>"></label>
+                    <% } %>
+                </div>
+                <div class="book-review item-4">
+                    <textarea id="title-textarea-<%=book.id%>" name="text-review" maxlength="200" disabled required><%=book.reviews%></textarea>
+                </div>
+                <div class="book-description item-5">
+                    <textarea 
+                        id="description-textarea-<%=book.id%>" name="text-description" maxlength="60" disabled> <%=book.description%> 
+                    </textarea>
+                </div>
+                <div class="book-delete item-6">
+                    <button id="delete-button-<%=book.id%>" onclick="deleteButton()">
+                        Delete
+                    </button>
+                </div>
+                <div class="book-edit item-7">
+                    <button 
+                     type="button"  id="edit-button-<%=book.id%>"onclick="editButton(<%=book.id%>)"> Edit
+                    </button>
+                    <input class="hidden" id="edit-submit-<%=book.id%>" type="submit"onclick="">
+                </div>
+                <div class="book-date item-8">
+                    <input id="date-input-<%=book.id%>" type="text" name="date" value="<%=book.day%> <%=book.month%> <%= book.year %>" disabled>
+                </div>
+            </div>
+            </form>
+
+                <% }) } else { %>
+                <div>
+                    No Book Reviews Found... :/
+                </div>
+            <% } %> 
+        </div>
+
+        <script>
+            function editButton (id) {
+                $("#edit-button-" + id).addClass("hidden");
+                $("#title-textarea-" + id).removeAttr("disabled");
+                $(".radio-" + id).removeClass("disable-radio");
+                $("#edit-submit-" + id).removeClass("hidden");
+            } 
+        </script>
+    </body>
+</html>

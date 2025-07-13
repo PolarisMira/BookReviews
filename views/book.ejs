@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <style>
+            body {
+                justify-content: center;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div id="add-container">
+
+            <form action="/submit-book" method="POST" id="add-input-containers">
+
+                <label for="title">Title : </label>
+                <input type="text" placeholder="title" name="title" required>
+
+                <label for="isbn" >ISBN ID : </label>
+                <input type="text" placeholder="ISBN ID" name="isbn" id="isbn-input" required>
+
+                <label for="description">Short Description : </label>
+                <textarea name="description" required></textarea>
+
+                <label for="review" >Review : </label>
+                <div class="book-rating">
+                    <input type="radio" id="start-1" name="star-rating" value="1" required>
+                    <label for="start-1"></label>
+                    <input type="radio" id="start-2" name="star-rating" value="2" >
+                    <label for="start-2"></label>
+                    <input type="radio" id="start-3" name="star-rating" value="3" >
+                    <label for="start-3"></label>
+                    <input type="radio" id="start-4" name="star-rating" value="4" >
+                    <label for="start-4"></label>
+                    <input type="radio" id="start-5" name="star-rating" value="5" >
+                    <label for="start-5"></label>
+                </div>
+                <textarea name="review"></textarea>
+                <input type="submit">
+            </form>
+
+            <div>
+                <img src="images/default.png" alt="book-cover" id="image-display">
+            </div>
+            
+        </div>
+
+        <div id="go-back-button">
+            <form action="/" method="GET">
+                <input type="submit" value="Go Back">
+            </form>
+        </div>
+
+        <script>
+
+            $("#isbn-input").blur(() => {
+
+                const image = $("#image-display");
+
+                const isbn = $("#isbn-input").val();
+                const imageAPI = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
+
+                if(!isbn) image.attr("src", "images/default.png")
+                else    
+                image.attr('src', imageAPI).on('load', function () {
+                    if (this.naturalWidth <= 1 && this.naturalHeight <= 1) {
+                        console.log('Invalid or not found ISBN cover image.');
+                    $(this).fadeIn().attr('src', 'images/invalid.png'); // fallback image
+                    } else {
+                        
+                    }
+                });
+                
+            })
+        </script>
+    </body>
+</html>
